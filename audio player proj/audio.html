@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="txt">audio player</title>
+    <script src="https://kit.fontawesome.com/b9d108b29a.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Roboto+Slab&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="audio.css">
+
+</head>
+<body>
+    <div class="bg">
+        <div class="backlayer"></div>
+        <img src="corona.jpg">
+    </div>
+   
+       <div class="container">
+        <div class="inner">
+            <div class="pic">
+                <img src="corona.jpg">
+                <div id="maq">
+                    <marquee id="mq"><p></p></marquee>
+                </div>
+            </div>
+            <button id="shuffle" onclick="ttog()" >s</button>
+            <div class="controls">
+               <a id="back"><i onclick="prev()" class="fa fa-step-backward" aria-hidden="true"></i></a> 
+              <a onclick="playToggle()" class="play_pause"><i class="fa fa-play-circle" aria-hidden="true"></i></a> 
+                <a><i id="forw" class="fa fa-step-forward" aria-hidden="true"></i></a>
+            </div>
+            <div id="prg">
+                <div id="fill"></div>
+                <div class="handle"></div>
+            </div>
+            <div id="currenttime">
+                00:00/00:00
+            </div>
+          <a onclick="playToggle()"; class="play_pause"> <i class="fa fa-pause-circle"></i></a>
+          <div class="volume">
+            <button id="btn1" onclick="addvol()">+</button>
+            <p id="btn_info"></p>
+            <button id="btn2" onclick="redvol()">-</button>
+          </div>
+        </div>
+       </div>
+
+
+<script src="jquery.js"></script>
+    <script>
+ 
+        var forw = document.getElementById("forw");
+        var fillbar = document.getElementById("fill");
+        var mq = document.getElementById("mq");
+        var songs = ["corona.mp3","closer.mp3","fairy tail op15.mp3","i just cant stop loving you.mp3",
+        "Gotye.mp3","bilie eilish.mp3","meet me halfway.mp3","coffin song.mp3","fallin.mp3",
+                    "fireboy.mp3","midnight city.mp3","no on knows.mp3","one more night.mp3",
+                "paris.mp3","rollup.mp3","sexy love.mp3","something just like this.mp3",
+            "the witcher.mp3","try me.mp3","viva la vida.mp3","with every heartbeat.mp3","righteous.mp3","owl city.mp3"];
+
+
+        var images = ['corona.jpg','closer.jpg','fairy tail.png','mj.jpg','gotye.jpg','bilie.jpg',
+                    'black eyed peas.jpg','coffin.jpg','fallin2.jpg','fireboy.jpg','m83.jpg','asa.jpg',
+                'one more night.jpg','paris.jpg','roll up.jpg','neyo.jpg','something just like this.jpeg',
+            'the witcher.jpg','try me.jpg','viva la vida.jpg','robyn.jpg','righteous.jpg','owl city.jpg']
+
+
+        var text = ['rythm of the night-corona','closer-the chainsmokers','fairy tail op 15',
+                    'i just can\'t stop loving you- Micheal jackson',
+                    'somebody that i used to love','every thing i wanted-bilie eilish',
+                'meet me half way- black eyed peas','astronomia','fallin-charlotte','i need you-fireboy',
+            'midnight city-m83','no one knows-asa','one more night-phil collins','paris-the chainsmokers',
+        'roll up-whiz khalifa','sexy love-neyo','something just like this-the chainsmokers ft coldplay',
+        'toss a coint to your witcher-the witcher','try me-tems','viva la vida-coldplay','with every heartbeat-robyn',
+    'Righteous-juice world','Metropolis-owl city'];
+
+
+        var shuffle = document.getElementById("shuffle");
+        var vol = document.getElementById("btn_info");
+        var pic =document.getElementsByTagName("img");
+        var currenttime = document.getElementById("currenttime");
+          var song = new Audio();
+          song.setAttribute("muted","muted");
+          song.id = 'haha';
+          var currentSong = 0;
+          if(currentSong%2==0){
+              song.setAttribute("loop","true");
+        }
+
+           console.log(song);
+
+             window.onload = playSong;
+          function playSong(){
+              song.src = songs[currentSong];
+             $("img").attr("src",images[currentSong]);
+             song.play();
+             mq.innerText =`Now playing: ${text[currentSong]}`;
+          }
+
+            function next(){
+                currentSong++;
+                if(currentSong>=songs.length){
+                    currentSong=0;
+                }
+                    playSong();
+                }
+
+                forw.addEventListener('click',next) ;
+
+                function prev(){
+                    currentSong--;
+                    if(currentSong<0){
+                        currentSong = songs.length-1;
+                    } 
+                    playSong();  
+                }
+
+                song.addEventListener('timeupdate',function(){
+                    var position = song.currentTime / song.duration;
+                    fillbar.style.width = position * 100 +'%';
+               convertTime(Math.round(song.currentTime));
+                });
+                
+                function convertTime(seconds){
+                  var min = Math.floor(seconds/60);
+                  var sec = Math.floor(seconds%60);
+                  min = (min<10)? "0"+min:min;
+                  sec = (sec<10)? "0"+sec:sec;
+                     currenttime.textContent = `${min}:${sec}`
+                    totalTime(Math.round(song.duration));
+              }
+                function totalTime(seconds){
+                  var min = Math.floor(seconds/60);
+                  var sec = Math.floor(seconds%60);
+                  min = (min<10)? "0"+min:min
+                  sec = (sec<10)? "0"+sec:sec
+                  currenttime.textContent += `/${min}:${sec}`
+                }
+                 
+
+            function playToggle(){
+                if(song.paused){
+                    song.play();
+                   $(".play_pause .fa-play-circle").css("visibility","hidden");
+                   $(".play_pause .fa-pause-circle").css("visibility","visible");
+                }else{
+                    song.pause();
+                    $(".play_pause .fa-play-circle").css("visibility","visible");
+                   $(".play_pause .fa-pause-circle").css("visibility","hidden");
+                }
+            }
+              function random(){
+                  var x = Math.floor(Math.random()*songs.length);
+                  song.src = songs[x];
+                  $("img").attr("src",images[x]);
+                  song.play();
+                  mq.innerText =`Now playing: ${text[x]}`;
+              }
+                function ttog(){
+                    shuffle.setAttribute("autofocus");
+                }
+              
+                if(shuffle.hasAttribute("autofocus")){
+                     forw.addEventListener('click',random);
+                }else{
+                    forw.addEventListener('click',next);
+                }
+
+
+             function addvol(){
+                 song.volume+=0.1;
+                 vol.textContent =`volume : ${song.volume.toPrecision(1)}`;
+                 if(song.volume>10){
+                     vol.textContent=`volume: max`;
+                     song.volume=0;
+                 }
+             }
+             function redvol(){
+                 song.volume-=0.1;
+                 vol.textContent = `volume: ${song.volume.toPrecision(1)}`;
+                 if(song.volume<=0){
+                     vol.textContent =`volume:muted`;
+                 }
+             }
+              
+            
+           console.log(song.volume);
+    </script>
+</body>
+
+</html>
